@@ -43,7 +43,7 @@ hyperparameter_defaults = dict(
     kernel_size=15,
     latent_channels=12,
     # Learning ----------------------------------
-    max_epochs=100,
+    max_epochs=10,
     learning_rate=0.000028649893094086237,
     momentum=0.99,
     optimize="adam0",
