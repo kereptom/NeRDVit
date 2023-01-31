@@ -51,7 +51,7 @@ hyperparameter_defaults = dict(
     train_loss_cut=2,
     )
 
-wandb.init(config=hyperparameter_defaults,project="test")
+wandb.init(config=hyperparameter_defaults,project="NeRDVit")
 config = wandb.config
 font = PIL.ImageFont.truetype('/usr/share/fonts/dejavu/DejaVuSans.ttf', 20)
 
