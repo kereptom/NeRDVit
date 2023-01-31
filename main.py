@@ -23,7 +23,7 @@ hyperparameter_defaults = dict(
     # Train dataset ------------------------------
     train_data_path='datasets/DIV2K/DIV2K_train_HR',
     train_image_ind=[x for x in range(1,801)],
-    train_dataset_size=10000,                                 #epoch size
+    train_dataset_size=1000,                                 #epoch size
     train_batch_size=13,
     patch_size=224,
     bayer='grbg',
@@ -41,7 +41,6 @@ hyperparameter_defaults = dict(
     use_bias=True,
     # Encoder-modulator -------------------------
     kernel_size=15,
-    encoder_linear_layers=1,
     latent_channels=12,
     # Learning ----------------------------------
     max_epochs=100,
@@ -70,7 +69,6 @@ class NeRD(pl.LightningModule):
         self.w0_initial = config.first_omega_0
         self.w0 = config.hidden_omega_0
         self.use_bias = config.use_bias
-        self.encoder_linear_layers = config.encoder_linear_layers
         self.kernel_size = config.kernel_size
         self.patch_size = config.patch_size
         self.latent_channels = config.latent_channels
@@ -98,8 +96,7 @@ class NeRD(pl.LightningModule):
         self.last_layer = SirenLayer(dim_in=self.dim_hidden, dim_out=self.dim_out,
                                      w0=self.w0, use_bias=self.use_bias, is_last=True)
 
-        self.encoder = EncoderToModulation(self.num_modulations, self.encoder_linear_layers,
-                                                 self.kernel_size, self.patch_size, self.latent_channels)
+        self.encoder = EncoderToModulation(self.num_modulations, self.kernel_size, self.latent_channels)
 
     def forward(self, x, im_bayer_LR4):
         x_shape = x.shape[:-1]

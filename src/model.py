@@ -69,12 +69,10 @@ class EncoderToModulation(nn.Module):
     Args:
     """
 
-    def __init__(self, num_modulations, num_layers, kernel_size, patch_size,latent_channels):
+    def __init__(self, num_modulations, kernel_size, latent_channels):
         super().__init__()
         self.num_modulations = num_modulations
-        self.num_layers = num_layers
         self.kernel_size = kernel_size
-        self.patch_size = patch_size
         self.latent_channels = latent_channels
 
 
