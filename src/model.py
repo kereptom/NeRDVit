@@ -4,6 +4,10 @@ from torch import nn
 import torch
 import torch.nn.functional as F
 
+from urllib.request import urlopen
+from PIL import Image
+import timm
+
 
 class Sine(nn.Module):
     """Sine activation with scaling.
@@ -72,30 +76,28 @@ class EncoderToModulation(nn.Module):
         self.kernel_size = kernel_size
         self.patch_size = patch_size
         self.latent_channels = latent_channels
-        dim_hidden = num_modulations
 
 
         self.in_ch = 4
         self.w_size = kernel_size
         self.w_half = math.floor(self.w_size / 2)
         self.convEnc = nn.Conv2d(self.in_ch, self.latent_channels, self.w_size, bias=False)
+        self.pixshuf = nn.PixelShuffle(2)
 
-        latent_dim = self.latent_channels * self.patch_size//2 * self.patch_size//2
+        self.maxvit_encoder = timm.create_model(
+            'maxvit_rmlp_small_rw_224',
+            pretrained=True,
+            num_classes=0,  # remove classifier nn.Linear
+        )
 
-        if num_layers == 1:
-            self.net = nn.Linear(latent_dim, num_modulations)
-        else:
-            layers = [nn.Linear(latent_dim, dim_hidden), nn.ReLU()]
-            if num_layers > 2:
-                for i in range(num_layers - 2):
-                    layers += [nn.Linear(dim_hidden, dim_hidden), nn.ReLU()]
-            layers += [nn.Linear(dim_hidden, num_modulations)]
-            self.net = nn.Sequential(*layers)
+        self.out = nn.Linear(768, num_modulations)
+
 
     def forward(self, img):
         img_pad = F.pad(img, [self.w_half, self.w_half, self.w_half, self.w_half], "reflect")
         enc_LR = self.convEnc(img_pad)
-        latent = enc_LR.reshape(enc_LR.shape[0],-1)
-        return self.net(latent)
+        initRGB = self.pixshuf(enc_LR)
+        max_enc = self.maxvit_encoder(initRGB)
+        return self.out(max_enc)
 
 

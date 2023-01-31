@@ -23,9 +23,9 @@ hyperparameter_defaults = dict(
     # Train dataset ------------------------------
     train_data_path='datasets/DIV2K/DIV2K_train_HR',
     train_image_ind=[x for x in range(1,801)],
-    train_dataset_size=100000,                                 #epoch size
+    train_dataset_size=10000,                                 #epoch size
     train_batch_size=13,
-    patch_size=100,
+    patch_size=224,
     bayer='grbg',
     # Test dataset ------------------------------
     test_data_path='datasets/DIV2K/DIV2K_valid_HR',
@@ -33,7 +33,7 @@ hyperparameter_defaults = dict(
     test_dataset_size=5,
     test_batch_size=5,
     # Siren MLP ---------------------------------
-    hidden_features=512,
+    hidden_features=1024,
     hidden_layers=10,
     first_omega_0=30,
     hidden_omega_0=30.,
@@ -42,7 +42,7 @@ hyperparameter_defaults = dict(
     # Encoder-modulator -------------------------
     kernel_size=15,
     encoder_linear_layers=1,
-    latent_channels=16,
+    latent_channels=12,
     # Learning ----------------------------------
     max_epochs=100,
     learning_rate=0.000028649893094086237,
